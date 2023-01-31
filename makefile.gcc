@@ -59,16 +59,16 @@ NNINTERP_OBJECTS=$(NNINTERP_SOURCES:.c=.o)
 all: tdinterp imcoarsen imdiff nninterp
 
 tdinterp: $(TDINTERP_OBJECTS)
-	$(CC) $(LDFLAGS) $(TDINTERP_OBJECTS) -o $@
+	$(CC) $(TDINTERP_OBJECTS) -o $@ $(LDFLAGS)
 
 imcoarsen: $(IMCOARSEN_OBJECTS)
-	$(CC) $(LDFLAGS) $(IMCOARSEN_OBJECTS) -o $@
+	$(CC) $(IMCOARSEN_OBJECTS) -o $@ $(LDFLAGS)
 
 imdiff: $(IMDIFF_OBJECTS)
-	$(CC) $(LDFLAGS) $(IMDIFF_OBJECTS) -o $@
+	$(CC) $(IMDIFF_OBJECTS) -o $@ $(LDFLAGS)
 
 nninterp: $(NNINTERP_OBJECTS)
-	$(CC) $(LDFLAGS) $(NNINTERP_OBJECTS) -o $@
+	$(CC) $(NNINTERP_OBJECTS) -o $@ $(LDFLAGS)
 
 .c.o:
 	$(CC) -c $(ALLCFLAGS) $< -o $@

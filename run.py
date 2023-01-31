@@ -9,16 +9,16 @@ import math
 # parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("scalefactor", type=int)
-ap.add_argument("psfsigma", type=int)
+ap.add_argument("psfsigma", type=float)
 ap.add_argument("action", type=str)
 args = ap.parse_args()
 
 
-img = PIL.Image('input_0.png')
+img = PIL.Image.open('input_0.png')
 (sizeX, sizeY) = img.size
 p = {}
 
-if args.action == "Interpolate image":
+if args.action == "Interpolate":
     # In this run mode, the interpolation is performed directly on the
     # selected image, and the estimated contours are also shown.
     
@@ -97,7 +97,7 @@ else:
     # image has size 34x34, and the interpolation has size 102x102.
     # The following crops the results if necessary.
     for f in ['coarsened_zoom', 'interpolated', 'fourier']:
-        img = PIL.Image(f + '.png')
+        img = PIL.Image.open(f + '.png')
         
         if (sizeX, sizeY) != img.size:
             img.crop((0, 0, sizeX, sizeY))
@@ -114,21 +114,3 @@ else:
         
         for f in ['interpolated', 'fourier', 'difference', 'fdifference']:
             p[f + '_zoom'] = subprocess.run(['nninterp', '-g', 'centered', '-x', str(displayzoom), f + '.png', f + '_zoom.png'])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-p1 = []
-subprocess.run(p1) 
-
