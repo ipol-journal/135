@@ -1,0 +1,106 @@
+# GCC makefile for tdinterp, Tensor-driven diffusion interpolation demo
+# Pascal Getreuer 
+# April 19, 2011
+
+# The FFTW3 single precision library (http://www.fftw.org) is required.
+# Set the flags needed for linking.
+LDFFTW3=-lfftw3f
+
+# The following three statements determine the build configuration.
+# For handling different image formats, the program can be linked with
+# the libjpeg, libpng, and libtiff libraries.  For each library, set
+# the flags needed for linking.  To disable use of a library, comment
+# its statement.  You can disable all three (BMP is always supported).
+LDLIBJPEG=-ljpeg
+LDLIBPNG=-lpng
+LDLIBTIFF=-ltiff
+
+##
+# Set this line to compile with OpenMP multithreading.  Comment the
+# line to disable OpenMP.
+OPENMP=-fopenmp
+
+##
+# Standard make settings
+SHELL=/bin/sh
+CFLAGS=-O3 -ansi -pedantic -Wall -Wextra $(OPENMP)
+LDFLAGS=-lm $(LDFFTW3) $(LDLIBJPEG) $(LDLIBPNG) $(LDLIBTIFF) $(OPENMP)
+
+## 
+# These statements add compiler flags to define LIBJPEG_SUPPORT, etc.,
+# depending on which libraries have been specified above.
+ifneq ($(LDLIBJPEG),)
+	CJPEG=-DLIBJPEG_SUPPORT
+endif
+ifneq ($(LDLIBPNG),)
+	CPNG=-DLIBPNG_SUPPORT
+endif
+ifneq ($(LDLIBTIFF),)
+	CTIFF=-DLIBTIFF_SUPPORT
+endif
+
+ALLCFLAGS=$(CFLAGS) $(CJPEG) $(CPNG) $(CTIFF)
+
+TDINTERP_SOURCES=tdinterpcli.c tdinterp.c conv.c finterp.c imageio.c basic.c
+IMCOARSEN_SOURCES=imcoarsen.c imageio.c basic.c
+IMDIFF_SOURCES=imdiff.c conv.c imageio.c basic.c
+NNINTERP_SOURCES=nninterpcli.c nninterp.c imageio.c basic.c
+SOURCES=basic.c basic.h conv.c conv.h imageio.c imageio.h imcoarsen.c imdiff.c \
+tdinterpcli.c tdinterp.c tdinterp.h finterp.c finterp.h \
+nninterpcli.c nninterp.c nninterp.h demo demo.bat frog-hr.bmp \
+readme.html bsd-license.txt makefile.gcc makefile.vc doxygen.conf
+TDINTERP_OBJECTS=$(TDINTERP_SOURCES:.c=.o)
+IMCOARSEN_OBJECTS=$(IMCOARSEN_SOURCES:.c=.o)
+IMDIFF_OBJECTS=$(IMDIFF_SOURCES:.c=.o)
+NNINTERP_OBJECTS=$(NNINTERP_SOURCES:.c=.o)
+.SUFFIXES: .c .o
+
+.PHONY: all
+all: tdinterp imcoarsen imdiff nninterp
+
+tdinterp: $(TDINTERP_OBJECTS)
+	$(CC) $(LDFLAGS) $(TDINTERP_OBJECTS) -o $@
+
+imcoarsen: $(IMCOARSEN_OBJECTS)
+	$(CC) $(LDFLAGS) $(IMCOARSEN_OBJECTS) -o $@
+
+imdiff: $(IMDIFF_OBJECTS)
+	$(CC) $(LDFLAGS) $(IMDIFF_OBJECTS) -o $@
+
+nninterp: $(NNINTERP_OBJECTS)
+	$(CC) $(LDFLAGS) $(NNINTERP_OBJECTS) -o $@
+
+.c.o:
+	$(CC) -c $(ALLCFLAGS) $< -o $@
+
+.PHONY: clean
+clean:
+	$(RM) $(TDINTERP_OBJECTS) $(IMCOARSEN_OBJECTS) $(IMDIFF_OBJECTS) $(NNINTERP_OBJECTS) \
+	tdinterp imcoarsen imdiff nninterp
+
+.PHONY: rebuild
+rebuild: clean all
+
+# Source documentation with Doxygen
+.PHONY: srcdoc
+srcdoc: $(SOURCES)
+	doxygen doxygen.conf
+
+.PHONY: dist
+dist: $(SOURCES)
+	echo tdinterp-src > .fname
+	-rm -rf `cat .fname`
+	mkdir `cat .fname`
+	ln $(SOURCES) `cat .fname`
+	tar chzf `cat .fname`.tar.gz `cat .fname`
+	-rm -rf `cat .fname` .fname
+
+.PHONY: dist-zip
+dist-zip: $(SOURCES)
+	echo tdinterp-src > .fname
+	-rm -rf `cat .fname`
+	mkdir `cat .fname`
+	ln $(SOURCES) `cat .fname`
+	-rm `cat .fname`.zip
+	zip -9 `cat .fname`.zip `cat .fname`/*
+	-rm -rf `cat .fname` .fname
