@@ -32,8 +32,8 @@ if args.action == "Interpolate":
     if (sizeX, sizeY) != cropsize:
         (x0, y0) = (int(math.floor((sizeX - cropsize[0])/2)),
             int(math.floor((sizeY - cropsize[1])/2)))
-        img.crop((x0, y0, x0 + cropsize[0], y0 + cropsize[1]))
-        img.save('input_0_sel.png')
+        imgcrop = img.crop((x0, y0, x0 + cropsize[0], y0 + cropsize[1]))
+        imgcrop.save('input_0.png')
     
     p = {
         # Perform the actual contour stencil interpolation
@@ -69,8 +69,8 @@ else:
     if (sizeX, sizeY) != cropsize:
         (x0, y0) = (int(math.floor((sizeX - cropsize[0])/2)),
             int(math.floor((sizeY - cropsize[1])/2)))
-        img.crop((x0, y0, x0 + cropsize[0], y0 + cropsize[1]))
-        img.save('input_0_sel.png')
+        imgcrop = img.crop((x0, y0, x0 + cropsize[0], y0 + cropsize[1]))
+        imgcrop.save('input_0.png')
         (sizeX, sizeY) = cropsize
     
     # If the image dimensions are small, zoom the displayed results.
@@ -104,8 +104,8 @@ else:
         img = PIL.Image.open(f + '.png')
         
         if (sizeX, sizeY) != img.size:
-            img.crop((0, 0, sizeX, sizeY))
-            img.save(f + '.png')
+            imgcrop = img.crop((0, 0, sizeX, sizeY))
+            imgcrop.save(f + '.png')
                 
     # Generate difference image
     p['difference'] = subprocess.run(['imdiff', 'input_0.png', 'interpolated.png', 'difference.png'])
