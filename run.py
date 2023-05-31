@@ -19,6 +19,9 @@ img = PIL.Image.open('input_0.png')
 p = {}
 
 if args.action == "Interpolate":
+    #write Interpolate=True in algo_info.txt
+    with open('algo_info.txt', 'w') as file:
+        file.write("Interpolate=1")
     # In this run mode, the interpolation is performed directly on the
     # selected image, and the estimated contours are also shown.
     
