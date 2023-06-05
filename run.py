@@ -52,9 +52,15 @@ if args.action == "Interpolate":
         }
     
     if displayzoom > 1:
+        #write displayzoom=True in algo_info.txt
+        with open('algo_info.txt', 'w') as file:
+            file.write("displayzoom=1") 
         subprocess.run(['nninterp', '-g', 'centered', '-x', str(displayzoom), 'interpolated.png', 'interpolated_zoom.png'])
         subprocess.run(['nninterp', '-g', 'centered', '-x', str(displayzoom), 'fourier.png', 'fourier_zoom.png'])
-
+    else:
+        #write notdisplayzoom=True in algo_info.txt
+        with open('algo_info.txt', 'a') as file:
+            file.write("notdisplayzoom=1")
 else:
     # In this run mode, the selected image is coarsened, interpolated
     # and compared with the original.
@@ -77,8 +83,15 @@ else:
     p['coarsened'] = subprocess.run(['imcoarsen', '-g', 'topleft', '-x', str(args.scalefactor), '-p', str(args.psfsigma), 'input_0.png', 'coarsened.png'])
     
     if displayzoom > 1:
+        #write displayzoom=True in algo_info.txt
+        with open('algo_info.txt', 'w') as file:
+            file.write("displayzoom=1") 
         p['exactzoom'] = subprocess.run(['nninterp', '-g', 'centered', '-x', str(displayzoom), 'input_0.png', 'input_0_zoom.png'])
-    
+    else:
+        #write notdisplayzoom=True in algo_info.txt
+        with open('algo_info.txt', 'a') as file:
+            file.write("notdisplayzoom=1")
+
     # Perform the actual interpolation
     p['interpolated'] = subprocess.run(['tdinterp', '-x', str(args.scalefactor), '-p', str(args.psfsigma), 'coarsened.png', 'interpolated.png'])
     
