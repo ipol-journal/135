@@ -56,10 +56,6 @@ if args.action == "Interpolate":
         subprocess.run(['nninterp', '-g', 'centered', '-x', str(displayzoom), 'fourier.png', 'fourier_zoom.png'])
 
 else:
-    #write Coarsen=True in algo_info.txt
-    with open('algo_info.txt', 'w') as file:
-        file.write("Coarsen=1")
-
     # In this run mode, the selected image is coarsened, interpolated
     # and compared with the original.
     
